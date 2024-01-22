@@ -1,77 +1,49 @@
-import { useState } from "react";
-import { FlatList, Text, TextInput, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { MAX_POKEMON_ID, PAGE_SIZE } from "../lib/constants";
-import { useQuery } from "@apollo/client";
-import { GET_POKEMON_LIST } from "../graphql/queries";
-import usePokedexFilterStore from "../store";
-import SmallPokemonCard from "@/components/pokemon/SmallPokemonCard";
-import { styles } from "./styles/index.styles";
-import Header from "@/components/Header";
-import colors from "@/lib/colors";
-import NetworkError from "./network-error";
-import useNetwork from "@/hooks/useNetwork";
-import EmptyState from "@/components/EmptyState";
-import IndexSkeleton from "@/components/skeletons/index.skeleton";
+import { Link } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
-	const { isConnected, isInternetReachable } = useNetwork();
-
-	const store = usePokedexFilterStore((state) => state);
-
-	const { data, loading, error, fetchMore } = useQuery(GET_POKEMON_LIST, {
-		variables: {
-			maxPokemonId: MAX_POKEMON_ID,
-			offset: (store.pageNumber - 1) * PAGE_SIZE,
-			search: `%${store.search}%`,
-		},
-	});
-
-	const renderItem = ({ item }) => {
-		return <SmallPokemonCard {...item} />;
-	};
-
-	if (!isConnected || !isInternetReachable) {
-		return <NetworkError />;
-	}
-
 	return (
-		<View style={styles.mainContainer}>
-			<View style={styles.container}>
-				<Header />
-				<View style={styles.searchbarContainer}>
-					<TextInput
-						value={store.search}
-						onChangeText={store.updateSearch}
-						style={styles.searchbar}
-						placeholder="Search Pokemon"
-						autoCapitalize="none"
-						autoCorrect={false}
-						autoComplete="off"
-					/>
-					<MaterialIcons
-						name="search"
-						size={20}
-						color={colors.gray[700]}
-						style={styles.searchIcon}
-					/>
-				</View>
+		<View style={styles.container}>
+			<View style={styles.main}>
+				<Text style={styles.title}>Hello World</Text>
+				<Text style={styles.subtitle}>This is the first page of your app.</Text>
 			</View>
-			{loading ? (
-				<IndexSkeleton n={15} />
-			) : (
-				<View style={styles.listContainer}>
-					<FlatList
-						data={data?.pokemon}
-						renderItem={renderItem}
-						keyExtractor={(item) => item.id}
-						ListEmptyComponent={EmptyState}
-						numColumns={3}
-						contentContainerStyle={styles.contentContainerStyle}
-						showsVerticalScrollIndicator={false}
-					/>
-				</View>
-			)}
+			<Link href={`/${20}`} asChild>
+				<Pressable
+					style={{
+						paddingVertical: 5,
+						paddingHorizontal: 10,
+						backgroundColor: "blue",
+						borderRadius: 15,
+					}}
+				>
+					<Text style={{ color: "white", fontSize: 30, fontWeight: "800" }}>
+						Press
+					</Text>
+				</Pressable>
+			</Link>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: "center",
+		padding: 24,
+	},
+	main: {
+		flex: 1,
+		justifyContent: "center",
+		maxWidth: 960,
+		marginHorizontal: "auto",
+	},
+	title: {
+		fontSize: 64,
+		fontWeight: "bold",
+	},
+	subtitle: {
+		fontSize: 36,
+		color: "#38434D",
+	},
+});
