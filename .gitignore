@@ -36,3 +36,7 @@ yarn-error.*
 
 # config
 .vscode
+
+# files
+ios
+androi
