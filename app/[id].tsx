@@ -1,7 +1,7 @@
-import { View, Text, Button } from "react-native";
 import React from "react";
-import Constants from "expo-constants";
+import { View, Text, Button } from "react-native";
 import { useRouter } from "expo-router";
+import Constants from "expo-constants";
 
 const Details = () => {
 	const router = useRouter();
